@@ -1,5 +1,6 @@
 namespace SmartTechTest.Main.Player
 {
+    using Game.Field;
     using System;
     using System.Collections;
     using System.Collections.Generic;
@@ -12,6 +13,9 @@ namespace SmartTechTest.Main.Player
         [Inject]
         private PlayerControl _playerControl;
 
+        [Inject]
+        private BaseField _baseField;
+
         [SerializeField]
         private PlayerView _playerView;
 
@@ -19,12 +23,6 @@ namespace SmartTechTest.Main.Player
 
         [SerializeField, Min(0.01f)]
         private float _moveSpeed;
-
-        [SerializeField]
-        private float _minXPosition;
-
-        [SerializeField]
-        private float _maxXPosition;
 
         private CompositeDisposable _disposable = new CompositeDisposable();
 
@@ -41,6 +39,7 @@ namespace SmartTechTest.Main.Player
                 .AddTo(_disposable);
         }
 
+        //TODO: при изменении поля в рантайме апдейтить позицию
         private void Move(Vector2 dir)
         {
             _playerView.UpdateView(dir);
@@ -52,7 +51,12 @@ namespace SmartTechTest.Main.Player
 
             Vector3 newPos =  transform.position + new Vector3(dir.x, 0, 0) * _moveSpeed * Time.deltaTime;
 
-            newPos = new Vector3(Mathf.Clamp(newPos.x, _minXPosition, _maxXPosition), newPos.y, newPos.z);
+            newPos = new Vector3(
+                Mathf.Clamp(newPos.x, 
+                    _baseField.FieldBounds.min.x + _playerView.SpriteBounds.extents.x, 
+                    _baseField.FieldBounds.max.x - _playerView.SpriteBounds.extents.x),
+                newPos.y, 
+                newPos.z);
 
             transform.position = newPos;
         }

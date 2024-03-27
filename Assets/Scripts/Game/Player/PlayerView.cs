@@ -7,6 +7,8 @@ namespace SmartTechTest.Main.Player
 
     public class PlayerView : MonoBehaviour
     {
+        public Bounds SpriteBounds => _spriteRenderer.bounds;
+        
         [SerializeField]
         private Sprite _defaultSprite;
 
