@@ -1,12 +1,13 @@
 namespace SmartTechTest.Main.State
 {
-    using System;
     using UniRx;
 
     public interface IStateSystem
     {
         public ReactiveCommand<AppState> OnStateChange { get; }
 
-        public void ChangeState(AppState newState);
+        public void RequestState(AppState newState, bool shouldClearResources = false);
+
+        public void RequestPause(bool isPaused);
     }
 }

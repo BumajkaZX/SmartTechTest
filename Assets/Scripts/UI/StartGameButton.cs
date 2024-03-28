@@ -20,7 +20,7 @@ namespace SmartTechTest.UI
         {
             _button.OnClickAsObservable().Subscribe(_ =>
             {
-                _stateSystem.ChangeState(new GameState());
+                _stateSystem.RequestState(new GameState());
                 
                 gameObject.SetActive(false);
             });

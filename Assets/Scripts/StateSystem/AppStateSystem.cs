@@ -1,21 +1,37 @@
 namespace SmartTechTest.Main.State
 {
-    using System;
     using UniRx;
+    using Zenject;
 
     public class AppStateSystem : IStateSystem
     {
         public ReactiveCommand<AppState> OnStateChange { get; } = new ReactiveCommand<AppState>();
+
+        private AppState _currentState;
+
+        [Inject]
+        private DiContainer _container;
         
-        public void ChangeState(AppState newState)
+        public void RequestState(AppState newState, bool shouldClearResources = false)
         {
-            OnStateChange.Publish(newState);
-            newState.Enter(out var possibleTransition);
-            if (possibleTransition == null)
+            if (_currentState != null)
+            {
+                _currentState.Exit(shouldClearResources);
+            }
+            
+            _currentState = newState;
+            _currentState.Init(_container);
+            _currentState.Enter();
+        }
+
+        public void RequestPause(bool isPaused)
+        {
+            if (_currentState == null)
             {
                 return;
             }
-            OnStateChange.Publish(possibleTransition);
+            
+            _currentState.Pause(isPaused);
         }
     }
 }

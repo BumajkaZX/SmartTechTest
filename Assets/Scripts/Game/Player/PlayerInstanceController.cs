@@ -1,77 +1,66 @@
 namespace SmartTechTest.Main.Player
 {
     using Game.Spawn;
+    using Spawn;
     using State;
-    using System;
-    using UniRx;
     using UnityEngine;
     using Zenject;
-    using Object = UnityEngine.Object;
 
     /// <summary>
     /// Управляет спавном игрока на поле
     /// </summary>
-    public class PlayerInstanceController : IDisposable
+    public class PlayerInstanceController : IStateStage
     {
-        private const string PLAYER_PATH = "Player/";
+        private const string PLAYER_PATH = "Player/PlayerBase";
 
         [Inject]
         private SpawnPoints _spawnPoints;
 
         [Inject]
-        private AppStateSystem _stateSystem;
+        private IPrefabSpawner _prefabSpawner;
 
         private PlayerController _playerController;
-
-        private CompositeDisposable _disposable;
-
-        public PlayerInstanceController()
-        {
-            _playerController = Resources.Load<PlayerController>(PLAYER_PATH);
-            _disposable = new CompositeDisposable();
-
-            SubscribeToState();
-        }
-
-        private void SubscribeToState()
-        {
-            _stateSystem.OnStateChange.Subscribe(state =>
-            {
-                if (state is GameState)
-                {
-                    BeginGame();
-                    return;
-                }
-
-                if (state is RestartState)
-                {
-                    ResetPlayer();
-                    return;
-                }
-
-                Dispose();
-            }).AddTo(_disposable);
-        }
 
         private void BeginGame()
         {
             _playerController =
-                Object.Instantiate(_playerController, _spawnPoints.PlayerSpawnTransform.position, Quaternion.identity);
+                _prefabSpawner.Instantiate(_playerController);
         }
 
         private void ResetPlayer()
         {
             _playerController.transform.position = _spawnPoints.PlayerSpawnTransform.position;
+            _playerController.gameObject.SetActive(true);
         }
 
-        public void Dispose()
+        public void Init()
         {
-            if (_playerController != null)
-            {
-                Object.Destroy(_playerController.gameObject);
-            }
+            _playerController = Resources.Load<PlayerController>(PLAYER_PATH);
+            BeginGame();
+        }
 
-            _disposable.Clear();
+        public void Start()
+        {
+            ResetPlayer();
+        }
+
+        public void Stop(bool shouldClearResources)
+        {
+            if (shouldClearResources)
+            {
+                if (_playerController != null)
+                {
+                    Object.Destroy(_playerController.gameObject);
+                }
+                return;
+            }
+            
+            _playerController.gameObject.SetActive(false);
+        }
+
+        public void Pause(bool isPaused)
+        {
+            
         }
     }
 }

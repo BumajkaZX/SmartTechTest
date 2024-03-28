@@ -1,10 +1,23 @@
 namespace SmartTechTest.Main.State
 {
+    using Zenject;
+
     public class RestartState : AppState
     {
-        public override void Enter(out AppState possibleTransition)
+
+        public override void Init(DiContainer container)
         {
-            possibleTransition = new GameState();
+            throw new System.NotImplementedException();
+        }
+
+        public override void Enter()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public override void Exit(bool shouldClearResources)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

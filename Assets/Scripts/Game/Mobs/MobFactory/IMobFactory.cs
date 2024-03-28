@@ -1,7 +1,7 @@
 namespace SmartTechTest.Main.Mob
 {
     using Game.Mobs;
-    using UnityEngine;
+    using System.Collections.Generic;
 
     /// <summary>
     /// Фабрика для мобов
@@ -11,8 +11,13 @@ namespace SmartTechTest.Main.Mob
         /// <summary>
         /// Запрос спавна моба
         /// </summary>
-        /// <param name="pos">Позиция спавна</param>
+        /// <param name="count">количество мобов в линии</param>
+        /// <param name="lines">количество линий мобов</param>
         /// <param name="arg">Дополнительные параметры</param>
-        public MobViewController SpawnMob(Vector3 pos, params string[] arg);
+        public List<MobViewController> SpawnMob(int count, int lines, params string[] arg);
+
+        public void ReleaseMob(MobViewController mob);
+        
+        public void ReleaseMob(List<MobViewController> mobs);
     }
 }
