@@ -1,6 +1,5 @@
 namespace SmartTechTest.Game.Fight
 {
-    using System.Collections.Generic;
     using UnityEngine;
 
     [CreateAssetMenu(menuName = "Game/Gun", fileName = "Gun")]

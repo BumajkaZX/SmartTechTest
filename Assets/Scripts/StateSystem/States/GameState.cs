@@ -14,9 +14,11 @@ namespace SmartTechTest.Main.State
             _container = container;
             
             container.BindInterfacesAndSelfTo<ProjectileRequestSystem>().AsSingle();
+            container.BindInterfacesAndSelfTo<HitObserver>().AsSingle();
             
             AddStage(new PlayerInstanceController(), container);
             AddStage(new MobsController(), container);
+            AddStage(new HitDetectionSystem(), container);
             
             AddPauseStage(new ProjectileMovementSystem(), container);
         }

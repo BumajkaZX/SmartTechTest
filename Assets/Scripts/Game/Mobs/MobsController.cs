@@ -3,13 +3,13 @@ namespace SmartTechTest.Game.Mobs
     using Field;
     using Fight;
     using Main.Mob;
+    using Main.Pool;
     using Main.State;
     using System;
     using System.Collections.Generic;
     using UniRx;
     using UnityEngine;
     using Zenject;
-    using Object = UnityEngine.Object;
     using Random = UnityEngine.Random;
 
     /// <summary>
@@ -26,7 +26,12 @@ namespace SmartTechTest.Game.Mobs
         private const int MAX_MOB_IN_LINE = 5;
 
         private const string MOB_GUN_PATH = "Guns/MobGun";
+        
+        private readonly LayerMask PlayerLayer = LayerMask.NameToLayer("Player");
 
+        [Inject]
+        private IGamePool<ParticleSystem> _deathParticles;
+        
         [Inject]
         private IMobFactory _mobFactory;
 
@@ -35,6 +40,9 @@ namespace SmartTechTest.Game.Mobs
 
         [Inject]
         private IProjectileRequest _projectileRequest;
+
+        [Inject]
+        private IHitEvent _hitEvent;
 
         private List<MobViewController> _viewControllers;
 
@@ -48,7 +56,7 @@ namespace SmartTechTest.Game.Mobs
 
         private BaseGun _mobGun;
         
-        public void SpawnWave(int mobLines)
+        private void SpawnWave(int mobLines)
         {
            _viewControllers = _mobFactory.SpawnMob(mobLines, Random.Range(MIN_MOB_IN_LINE, MAX_MOB_IN_LINE));
            CalculateShootingMobs();
@@ -82,6 +90,7 @@ namespace SmartTechTest.Game.Mobs
 
         public void Dispose()
         {
+            _mobFactory.ReleaseMob(_viewControllers);
             _disposable.Clear();
         }
 
@@ -109,16 +118,15 @@ namespace SmartTechTest.Game.Mobs
                 .Where(_ => !_isPaused)
                 .Subscribe(_ => Shoot())
                 .AddTo(_disposable);
+            
+            _hitEvent.OnHitDetected.Subscribe(OnHit).AddTo(_disposable);
         }
 
         public void Stop(bool shouldClearResources)
         {
             if (shouldClearResources)
             {
-                foreach (var controller in _viewControllers)
-                {
-                    Object.Destroy(controller.gameObject);
-                }
+                _mobFactory.ReleaseMob(_viewControllers);
                 
                 return;
             }
@@ -135,10 +143,40 @@ namespace SmartTechTest.Game.Mobs
         {
             
         }
+        
+        private void OnHit(GameObject hitObject)
+        {
+            if (!hitObject.TryGetComponent(out MobViewController viewController))
+            {
+                return;
+            }
+
+            _viewControllers.Remove(viewController);
+            
+            _mobFactory.ReleaseMob(viewController);
+            
+            var releaseCallback = _deathParticles.RequestObject(viewController.MobConfig.DestroyParticles, out var pooledParticles);
+
+            pooledParticles.transform.position = viewController.transform.position;
+           
+            pooledParticles.Play();
+           
+            CompositeDisposable disposable = new CompositeDisposable();
+            pooledParticles.ObserveEveryValueChanged(particle => particle.isPlaying)
+                .Where(isPlaying => !isPlaying)
+                .Subscribe(_ =>
+                {
+                    releaseCallback(pooledParticles);
+                    disposable.Clear();
+                })
+                .AddTo(disposable);
+        }
 
         private void Shoot()
         {
-            _projectileRequest.RequestProjectile(_mobGun, _viewControllers[Random.Range(0, _viewControllers.Count)].transform.position, Vector3.down * _mobGun.ProjectileSpeed);
+            _projectileRequest.RequestProjectile(_mobGun,
+                _viewControllers[Random.Range(0, _viewControllers.Count)].transform.position,
+                Vector3.down * _mobGun.ProjectileSpeed, PlayerLayer);
         }
     }
 }

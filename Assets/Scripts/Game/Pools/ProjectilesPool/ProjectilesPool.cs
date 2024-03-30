@@ -1,12 +1,9 @@
 namespace SmartTechTest.Main.Pool
 {
     using Game.Fight;
-    using Spawn;
     using System;
     using System.Collections.Generic;
-    using UnityEngine;
     using UnityEngine.Pool;
-    using Zenject;
     using Object = UnityEngine.Object;
 
     public class ProjectilesPool : IGamePool<ProjectileView>

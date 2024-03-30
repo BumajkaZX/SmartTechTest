@@ -8,6 +8,8 @@ namespace SmartTechTest.Game.Fight
         
         public Collider2D Collider => _collider2D;
 
+        public LayerMask Target => _target;
+
         [SerializeField]
         private Collider2D _collider2D;
 
@@ -15,6 +17,10 @@ namespace SmartTechTest.Game.Fight
 
         private BaseGun _associatedGun;
 
+        private LayerMask _target;
+
         public void SetMoveDirectory(Vector2 dir) => _moveDir = dir;
+
+        public void SetTarget(LayerMask target) => _target = target;
     }
 }

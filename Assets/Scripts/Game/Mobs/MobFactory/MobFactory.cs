@@ -96,7 +96,15 @@ namespace SmartTechTest.Game.Mobs
         private void CreatePool()
         {
             _mobPool = new ObjectPool<MobViewController>(() => _prefabSpawner.Instantiate(_mobViewController),
-                actionOnDestroy: mob => Object.Destroy(mob.gameObject),
+                mob => mob.gameObject.SetActive(true),
+                mob => mob.gameObject.SetActive(false),
+                mob =>
+                {
+                    if (mob.gameObject != null)
+                    {
+                        Object.Destroy(mob.gameObject);
+                    }
+                },
                 defaultCapacity: POOL_CAPACITY);
         }
 

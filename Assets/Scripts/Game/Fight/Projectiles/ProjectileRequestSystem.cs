@@ -22,7 +22,7 @@ namespace SmartTechTest.Game.Fight
         
         private CompositeDisposable _disposable = new CompositeDisposable();
         
-        public void RequestProjectile(BaseGun gun, Vector3 pos, Vector3 dir)
+        public void RequestProjectile(BaseGun gun, Vector3 pos, Vector3 dir, LayerMask target)
         {
             var releaseAction = _projectilesPool.RequestObject(gun.ProjectileView, out var spawnedProjectile);
 
@@ -38,6 +38,8 @@ namespace SmartTechTest.Game.Fight
             spawnedProjectile.transform.position = pos;
             
             spawnedProjectile.SetMoveDirectory(dir);
+            
+            spawnedProjectile.SetTarget(target);
             
             OnViewSpawned.Execute(spawnedProjectile);
         }
