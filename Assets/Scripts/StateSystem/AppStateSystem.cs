@@ -16,6 +16,11 @@ namespace SmartTechTest.Main.State
         {
             if (_currentState != null)
             {
+                if (_currentState.GetType() == newState.GetType())
+                {
+                    return;
+                }
+                
                 _currentState.Exit(shouldClearResources);
             }
             
@@ -30,8 +35,8 @@ namespace SmartTechTest.Main.State
             {
                 return;
             }
-            
-            _currentState.Pause(isPaused);
+
+            _currentState.RequestPause(isPaused);
         }
     }
 }

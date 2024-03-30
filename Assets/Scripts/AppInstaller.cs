@@ -28,6 +28,7 @@ namespace SmartTechTest.Register
             RegisterMobFactory();
             RegisterSpawnPoints();
             RegisterSpawner();
+            RegisterProjectilesPool();
         }
 
         /// <summary>
@@ -87,6 +88,14 @@ namespace SmartTechTest.Register
         private void RegisterSpawner()
         {
             Container.BindInterfacesAndSelfTo<ContainerPrefabSpawner>().AsSingle();
+        }
+
+        /// <summary>
+        /// Регистрация пула проджектайлов
+        /// </summary>
+        private void RegisterProjectilesPool()
+        {
+            Container.BindInterfacesAndSelfTo<ProjectilesPool>().AsTransient();
         }
     }
 }

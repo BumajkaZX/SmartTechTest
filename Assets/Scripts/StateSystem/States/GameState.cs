@@ -1,15 +1,24 @@
 namespace SmartTechTest.Main.State
 {
+    using Game.Fight;
     using Game.Mobs;
     using Player;
     using Zenject;
 
     public class GameState : AppState
     {
+        private DiContainer _container;
+        
         public override void Init(DiContainer container)
         {
+            _container = container;
+            
+            container.BindInterfacesAndSelfTo<ProjectileRequestSystem>().AsSingle();
+            
             AddStage(new PlayerInstanceController(), container);
             AddStage(new MobsController(), container);
+            
+            AddPauseStage(new ProjectileMovementSystem(), container);
         }
 
         public override void Enter()
@@ -24,8 +33,10 @@ namespace SmartTechTest.Main.State
         {
             foreach (var stage in _stateStages)
             {
-                stage.Value.Stop(false);
+                stage.Value.Stop(shouldClearResources);
             }
+
+            _container.Unbind<ProjectileRequestSystem>();
         }
     }
 }

@@ -1,7 +1,6 @@
 namespace SmartTechTest.Main.Pool
 {
     using System;
-    using System.Collections;
     using System.Collections.Generic;
     using UnityEngine;
     using UnityEngine.Pool;
@@ -19,30 +18,29 @@ namespace SmartTechTest.Main.Pool
             _poolDictionary = new Dictionary<ParticleSystem, ObjectPool<ParticleSystem>>();
         }
 
-        public void CreatePool(ParticleSystem particleSystem, int estimatedCapacity = 10)
+        private void CreatePool(ParticleSystem baseObject, int estimatedCapacity = 10)
         {
-            if (_poolDictionary.ContainsKey(particleSystem))
+            if (_poolDictionary.ContainsKey(baseObject))
             {
                 return;
             }
 
             ObjectPool<ParticleSystem> newPool =
                 new ObjectPool<ParticleSystem>(
-                    () => Object.Instantiate(particleSystem),
+                    () => Object.Instantiate(baseObject),
                     defaultCapacity: estimatedCapacity);
 
-            _poolDictionary.Add(particleSystem, newPool);
+            _poolDictionary.Add(baseObject, newPool);
         }
 
         public Action<ParticleSystem> RequestObject(ParticleSystem baseObject, out ParticleSystem returnedObjectFromPool)
         {
-            if (!_poolDictionary.TryGetValue(baseObject, out var pool))
+            if (!_poolDictionary.ContainsKey(baseObject))
             {
-                returnedObjectFromPool = null;
-                return Release;
+                CreatePool(baseObject);
             }
 
-            returnedObjectFromPool = pool.Get();
+            returnedObjectFromPool = _poolDictionary[baseObject].Get();
             return Release;
         }
 

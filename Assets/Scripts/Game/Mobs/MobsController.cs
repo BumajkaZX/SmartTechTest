@@ -1,8 +1,8 @@
 namespace SmartTechTest.Game.Mobs
 {
     using Field;
+    using Fight;
     using Main.Mob;
-    using Main.Pool;
     using Main.State;
     using System;
     using System.Collections.Generic;
@@ -18,19 +18,23 @@ namespace SmartTechTest.Game.Mobs
     public class MobsController : IStateStage, IDisposable
     {
         private const float MOVE_SPEED = 0.4f;
+        
+        private const float SHOOT_TIME = 2;
 
         private const int MIN_MOB_IN_LINE = 3;
 
         private const int MAX_MOB_IN_LINE = 5;
-        
-        [Inject]
-        private IGamePool<ParticleSystem> _destroyPool;
+
+        private const string MOB_GUN_PATH = "Guns/MobGun";
 
         [Inject]
         private IMobFactory _mobFactory;
 
         [Inject]
         private BaseField _baseField;
+
+        [Inject]
+        private IProjectileRequest _projectileRequest;
 
         private List<MobViewController> _viewControllers;
 
@@ -40,15 +44,14 @@ namespace SmartTechTest.Game.Mobs
 
         private bool _reverseMove;
 
-        public MobsController()
-        {
-            _disposable = new CompositeDisposable();
-            _viewControllers = new List<MobViewController>();
-        }
+        private bool _isPaused;
+
+        private BaseGun _mobGun;
         
         public void SpawnWave(int mobLines)
         {
            _viewControllers = _mobFactory.SpawnMob(mobLines, Random.Range(MIN_MOB_IN_LINE, MAX_MOB_IN_LINE));
+           CalculateShootingMobs();
         }
 
         private void Update()
@@ -84,14 +87,28 @@ namespace SmartTechTest.Game.Mobs
 
         public void Init()
         {
-            
+            _disposable = new CompositeDisposable();
+            _viewControllers = new List<MobViewController>();
+
+            _mobGun = Resources.Load<BaseGun>(MOB_GUN_PATH);
         }
 
         public void Start()
         {
             SpawnWave(3);
             
-            StartMove();
+            //Move
+            Observable.EveryUpdate()
+                .Where(_ => !_isPaused)
+                .Subscribe(_ => Update())
+                .AddTo(_disposable);
+
+            //Shoot
+            Observable.Timer(TimeSpan.FromSeconds(SHOOT_TIME))
+                .Repeat()
+                .Where(_ => !_isPaused)
+                .Subscribe(_ => Shoot())
+                .AddTo(_disposable);
         }
 
         public void Stop(bool shouldClearResources)
@@ -105,17 +122,13 @@ namespace SmartTechTest.Game.Mobs
                 
                 return;
             }
+            
+            _disposable?.Clear();
         }
 
         public void Pause(bool isPaused)
         {
-            if (isPaused)
-            {
-                _disposable.Clear();
-                return;
-            }
-            
-            StartMove();
+            _isPaused = isPaused;
         }
 
         private void CalculateShootingMobs()
@@ -123,11 +136,9 @@ namespace SmartTechTest.Game.Mobs
             
         }
 
-        private void StartMove()
+        private void Shoot()
         {
-            Observable.EveryUpdate()
-                .Subscribe(_ => Update())
-                .AddTo(_disposable);
+            _projectileRequest.RequestProjectile(_mobGun, _viewControllers[Random.Range(0, _viewControllers.Count)].transform.position, Vector3.down * _mobGun.ProjectileSpeed);
         }
     }
 }

@@ -8,7 +8,7 @@
     {
         protected Dictionary<int, IStateStage> _stateStages = new Dictionary<int, IStateStage>();
 
-        protected bool _isInited;
+        protected List<IPauseStage> _pauseStages = new List<IPauseStage>();
         
         public abstract void Init(DiContainer container);
         
@@ -16,14 +16,27 @@
 
         public abstract void Exit(bool shouldClearResources);
 
-        public void Pause(bool isPaused)
+        public virtual void RequestPause(bool isPaused)
         {
-            foreach (var state in _stateStages)
+            foreach (var pauseStage in _pauseStages)
             {
-                state.Value.Pause(isPaused);
+                pauseStage.Pause(isPaused);
             }
         }
 
+        protected void AddPauseStage(IPauseStage stage, DiContainer container)
+        {
+            if (_pauseStages.Contains(stage))
+            {
+                Debug.LogWarning($"{stage.GetType().FullName} is already in pause stages");
+                return;
+            }
+            
+            _pauseStages.Add(stage);
+            container.Inject(stage);
+            stage.Init();
+        }
+        
         protected void AddStage(IStateStage stage, DiContainer container)
         {
             if (!_stateStages.TryAdd(stage.GetHashCode(), stage))

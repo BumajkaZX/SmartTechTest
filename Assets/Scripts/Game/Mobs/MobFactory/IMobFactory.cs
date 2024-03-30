@@ -2,12 +2,15 @@ namespace SmartTechTest.Main.Mob
 {
     using Game.Mobs;
     using System.Collections.Generic;
+    using UniRx;
 
     /// <summary>
     /// Фабрика для мобов
     /// </summary>
     public interface IMobFactory
     {
+        public ReactiveCommand<List<MobViewController>> OnMobSpawned { get; }
+        
         /// <summary>
         /// Запрос спавна моба
         /// </summary>

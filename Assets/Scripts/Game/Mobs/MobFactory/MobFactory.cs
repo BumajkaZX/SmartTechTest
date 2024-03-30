@@ -6,6 +6,7 @@ namespace SmartTechTest.Game.Mobs
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using UniRx;
     using UnityEngine;
     using UnityEngine.Pool;
     using Zenject;
@@ -14,6 +15,11 @@ namespace SmartTechTest.Game.Mobs
     
     public class MobFactory : IMobFactory, IDisposable
     {
+        /// <summary>
+        /// Извещает о спавне мобов
+        /// </summary>
+        public ReactiveCommand<List<MobViewController>> OnMobSpawned { get; } 
+        
         private const string MOBS_PATH = "Mobs/";
 
         private const string BASE_PREFAB_MOB = "Mobs/Base/MobBase";
@@ -35,15 +41,17 @@ namespace SmartTechTest.Game.Mobs
         private MobViewController _mobViewController;
 
         private ObjectPool<MobViewController> _mobPool;
-
+        
         public MobFactory()
         {
+            OnMobSpawned = new ReactiveCommand<List<MobViewController>>();
+            
             _mobs = Resources.LoadAll<AbstractMob>(MOBS_PATH).ToList();
             _mobViewController = Resources.Load<MobViewController>(BASE_PREFAB_MOB);
 
             CreatePool();
         }
-        
+
         public List<MobViewController> SpawnMob(int count, int lines, params string[] arg)
         {
             float finalDistance = _mobViewController.MobBounds.size.x + DISTANCE_BETWEEN_MOBS;
@@ -66,6 +74,8 @@ namespace SmartTechTest.Game.Mobs
                     spawnedList.Add(spawnedMob);
                 }
             }
+
+            OnMobSpawned.Execute(spawnedList);
             
             return spawnedList;
         }
