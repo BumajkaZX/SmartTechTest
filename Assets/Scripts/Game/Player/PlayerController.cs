@@ -83,6 +83,7 @@ namespace SmartTechTest.Main.Player
         
         private void Fire()
         {
+            Debug.LogError("Fire");
             _projectileRequest.RequestProjectile(_currentGun, transform.position, Vector3.up * _currentGun.ProjectileSpeed, _targetLayer);
         }
         

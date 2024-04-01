@@ -155,21 +155,23 @@ namespace SmartTechTest.Game.Mobs
             
             _mobFactory.ReleaseMob(viewController);
             
-            var releaseCallback = _deathParticles.RequestObject(viewController.MobConfig.DestroyParticles, out var pooledParticles);
-
+            var releaseCommand =  _deathParticles.RequestObject(viewController.MobConfig.DestroyParticles, out var pooledParticles);
+            
             pooledParticles.transform.position = viewController.transform.position;
            
             pooledParticles.Play();
-           
+
             CompositeDisposable disposable = new CompositeDisposable();
-            pooledParticles.ObserveEveryValueChanged(particle => particle.isPlaying)
-                .Where(isPlaying => !isPlaying)
-                .Subscribe(_ =>
+            _disposable.Add(disposable);
+            
+            pooledParticles.ObserveEveryValueChanged(particles => particles.isStopped)
+                .Where(isStopped => isStopped)
+                .Subscribe( _ =>
                 {
-                    releaseCallback(pooledParticles);
+                    releaseCommand.Execute();
                     disposable.Clear();
-                })
-                .AddTo(disposable);
+                    _disposable.Remove(disposable);
+                }).AddTo(disposable);
         }
 
         private void Shoot()

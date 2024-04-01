@@ -1,12 +1,13 @@
 namespace SmartTechTest.Main.Pool
 {
     using System;
+    using UniRx;
 
     /// <summary>
     /// Обертка для работы с пулом
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public interface IGamePool<T> where T : class
+    public interface IGamePool<T> : IDisposable where T : class 
     {
         /// <summary>
         /// Запрос обьекта
@@ -14,6 +15,6 @@ namespace SmartTechTest.Main.Pool
         /// <param name="baseObject">Базовый обьект = ключ</param>
         /// <param name="returnedObjectFromPool">Возвращаемый обьект</param>
         /// <returns>Коллбек на возвращение обьекта</returns>
-        public Action<T> RequestObject(T baseObject, out T returnedObjectFromPool);
+        public ReactiveCommand RequestObject(T baseObject, out T returnedObjectFromPool);
     }
 }

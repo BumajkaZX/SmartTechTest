@@ -39,6 +39,7 @@ namespace SmartTechTest.Main.State
             }
 
             _container.Unbind<ProjectileRequestSystem>();
+            _container.Unbind<HitObserver>();
         }
     }
 }

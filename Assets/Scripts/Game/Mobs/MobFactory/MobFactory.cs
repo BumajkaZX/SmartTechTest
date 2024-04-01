@@ -100,7 +100,7 @@ namespace SmartTechTest.Game.Mobs
                 mob => mob.gameObject.SetActive(false),
                 mob =>
                 {
-                    if (mob.gameObject != null)
+                    if (mob != null)
                     {
                         Object.Destroy(mob.gameObject);
                     }

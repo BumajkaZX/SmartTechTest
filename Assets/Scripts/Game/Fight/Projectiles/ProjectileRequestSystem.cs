@@ -26,12 +26,19 @@ namespace SmartTechTest.Game.Fight
         {
             var releaseAction = _projectilesPool.RequestObject(gun.ProjectileView, out var spawnedProjectile);
 
+            //TODO: Extension
+            CompositeDisposable disposable = new CompositeDisposable();
+            _disposable.Add(disposable);
+            
             spawnedProjectile.gameObject.ObserveEveryValueChanged(go => go.activeSelf).Where(active => !active)
                 .Subscribe(_ =>
                 {
+
                     OnViewReleased.Execute(spawnedProjectile);
-                    releaseAction.Invoke(spawnedProjectile);
-                }).AddTo(_disposable);
+                    releaseAction.Execute();
+                    disposable.Clear();
+                    _disposable.Remove(disposable);
+                }).AddTo(disposable);
             
             _spawnedViews.Add(spawnedProjectile);
 
