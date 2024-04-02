@@ -749,7 +749,7 @@ GameObject:
   - component: {fileID: 958321227}
   - component: {fileID: 958321226}
   m_Layer: 0
-  m_Name: stgpics_testbg_7
+  m_Name: BG
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -944,6 +944,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1039797799}
   - component: {fileID: 1039797800}
+  - component: {fileID: 1039797801}
   m_Layer: 5
   m_Name: Input
   m_TagString: Untagged
@@ -984,6 +985,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e11e28168aa927c439f99fb82531fd20, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _canvasGroup: {fileID: 1039797801}
+--- !u!225 &1039797801
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1039797798}
+  m_Enabled: 1
+  m_Alpha: 0.35
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &1051954051
 GameObject:
   m_ObjectHideFlags: 0
@@ -1736,7 +1750,7 @@ GameObject:
   - component: {fileID: 1338339254}
   - component: {fileID: 1338339255}
   m_Layer: 0
-  m_Name: stgpics_testbg_36
+  m_Name: BG
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1970,7 +1984,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1537496846
 RectTransform:
   m_ObjectHideFlags: 0

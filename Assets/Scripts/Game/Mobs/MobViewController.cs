@@ -12,15 +12,18 @@ namespace SmartTechTest.Game.Mobs
         [SerializeField]
         private SpriteRenderer _spriteRenderer;
 
+        private float _defaultXPos;
+
         public void Init(Sprite sprite, AbstractMob configMob)
         {
             _spriteRenderer.sprite = sprite;
             MobConfig = configMob;
+            _defaultXPos = transform.position.x;
         }
 
-        public void Move(Vector3 dirPos)
+        public void Move(float offsetX)
         {
-            transform.position += dirPos;
+            transform.position = new Vector3(_defaultXPos + offsetX,transform.position.y, transform.position.z);
         }
     }
 }

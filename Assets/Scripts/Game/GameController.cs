@@ -50,7 +50,7 @@ namespace SmartTechTest.Game
             
             _gameCounter.Enable(true);
             
-            _playerInputView.gameObject.SetActive(true);
+            _playerInputView.Enable(true);
         }
 
         public void Stop(bool shouldClearResources)
@@ -63,7 +63,7 @@ namespace SmartTechTest.Game
             _gameCounter.Enable(false);
             _gameCounter.Clear();
             
-            _playerInputView.gameObject.SetActive(false);
+            _playerInputView.Enable(false);
         }
 
         private void OnMobHitted()

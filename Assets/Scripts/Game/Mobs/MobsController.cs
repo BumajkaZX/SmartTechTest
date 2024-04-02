@@ -17,7 +17,7 @@ namespace SmartTechTest.Game.Mobs
     /// </summary>
     public class MobsController : IStateStage, IDisposable
     {
-        private const float MOVE_SPEED = 0.4f;
+        private const float MOVE_SPEED = 0.1f;
         
         private const float SHOOT_TIME = 1.2f;
 
@@ -59,36 +59,56 @@ namespace SmartTechTest.Game.Mobs
         private bool _isPaused;
 
         private BaseGun _mobGun;
+
+        private float _offsetPos; //Смещение крайнего моба к левой границе
+
+        private float _moveIterator = 0.5f; //В 0 позицию
         
         private void SpawnWave(int mobLines)
         {
            _viewControllers = _mobFactory.SpawnMob(mobLines, Random.Range(MIN_MOB_IN_LINE, MAX_MOB_IN_LINE));
+           _offsetPos = _baseField.FieldBounds.min.x - _viewControllers[0].transform.position.x + _viewControllers[0].MobBounds.extents.x;
+           _moveIterator = 0.5f;
            CalculateShootingMobs();
         }
 
         private void Update()
         {
+            if (_moveIterator >= 1)
+            {
+                _offsetPos *= -1;
+                _moveIterator = 0;
+            }
+            _moveIterator += MOVE_SPEED * Time.deltaTime;
+                
+            var currentOffset = Mathf.Lerp(-_offsetPos, _offsetPos, _moveIterator);
+            
             for (int i = 0; i < _viewControllers.Count; i++)
             {
-                //Отсчитываем с разных концов
-                var mob = _viewControllers[_reverseMove ? _viewControllers.Count - 1 - i : i ];
+                // //Отсчитываем с разных концов
+                // var mob = _viewControllers[_reverseMove ? _viewControllers.Count - 1 - i : i ];
+                //
+                // //TODO: Возможно, добавить ограничение при последнем шаге к границам
+                // mob.Move((_reverseMove ? Vector2.left : Vector2.right) * MOVE_SPEED * Time.deltaTime);
+                //
+                //
+                //
+                // //левый лимит
+                // if (mob.transform.position.x <= _baseField.FieldBounds.min.x + mob.MobBounds.extents.x)
+                // {
+                //     _reverseMove = !_reverseMove;
+                //     break;
+                // }
+                //
+                // //правый лимит
+                // if (mob.transform.position.x >= _baseField.FieldBounds.max.x - mob.MobBounds.extents.x)
+                // {
+                //     _reverseMove = !_reverseMove;
+                //     break;
+                // }
+                var mob = _viewControllers[i];
 
-                //TODO: Возможно, добавить ограничение при последнем шаге к границам
-                mob.Move((_reverseMove ? Vector2.left : Vector2.right) * MOVE_SPEED * Time.deltaTime);
-                
-                //левый лимит
-                if (mob.transform.position.x <= _baseField.FieldBounds.min.x + mob.MobBounds.extents.x)
-                {
-                    _reverseMove = !_reverseMove;
-                    break;
-                }
-                
-                //правый лимит
-                if (mob.transform.position.x >= _baseField.FieldBounds.max.x - mob.MobBounds.extents.x)
-                {
-                    _reverseMove = !_reverseMove;
-                    break;
-                }
+                mob.Move(currentOffset);
             }
         }
 
@@ -110,13 +130,13 @@ namespace SmartTechTest.Game.Mobs
         {
             SpawnWave(MOB_LINES);
             
-            //Move
+            //Движение
             Observable.EveryUpdate()
                 .Where(_ => !_isPaused)
                 .Subscribe(_ => Update())
                 .AddTo(_disposable);
 
-            //Shoot
+            //Стрельба
             Observable.Timer(TimeSpan.FromSeconds(SHOOT_TIME))
                 .Repeat()
                 .Where(_ => !_isPaused && _viewControllers.Count != 0)
