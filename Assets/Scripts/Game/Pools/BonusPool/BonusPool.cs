@@ -7,6 +7,9 @@ namespace SmartTechTest.Main.Pool
     using UnityEngine;
     using UnityEngine.Pool;
 
+    /// <summary>
+    /// Пул бонусов
+    /// </summary>
     public class BonusPool : IGamePool<BonusViewController>
     {
         private const string BONUS_TYPES_PATH = "Bonus/Types";

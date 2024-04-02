@@ -7,6 +7,9 @@ namespace SmartTechTest.Main.State
     using Player;
     using Zenject;
 
+    /// <summary>
+    /// Стейт основной игры
+    /// </summary>
     public class GameState : AppState
     {
         private DiContainer _container;

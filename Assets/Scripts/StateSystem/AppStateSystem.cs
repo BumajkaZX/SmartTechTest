@@ -1,9 +1,11 @@
 namespace SmartTechTest.Main.State
 {
     using UniRx;
-    using UnityEngine;
     using Zenject;
 
+    /// <summary>
+    /// Стейтмашина приложения
+    /// </summary>
     public class AppStateSystem : IStateSystem
     {
         public ReactiveCommand<AppState> OnStateChange { get; } = new ReactiveCommand<AppState>();

@@ -83,32 +83,9 @@ namespace SmartTechTest.Game.Mobs
                 
             var currentOffset = Mathf.Lerp(-_offsetPos, _offsetPos, _moveIterator);
             
-            for (int i = 0; i < _viewControllers.Count; i++)
+            for(int i = 0; i < _viewControllers.Count; i++)
             {
-                // //Отсчитываем с разных концов
-                // var mob = _viewControllers[_reverseMove ? _viewControllers.Count - 1 - i : i ];
-                //
-                // //TODO: Возможно, добавить ограничение при последнем шаге к границам
-                // mob.Move((_reverseMove ? Vector2.left : Vector2.right) * MOVE_SPEED * Time.deltaTime);
-                //
-                //
-                //
-                // //левый лимит
-                // if (mob.transform.position.x <= _baseField.FieldBounds.min.x + mob.MobBounds.extents.x)
-                // {
-                //     _reverseMove = !_reverseMove;
-                //     break;
-                // }
-                //
-                // //правый лимит
-                // if (mob.transform.position.x >= _baseField.FieldBounds.max.x - mob.MobBounds.extents.x)
-                // {
-                //     _reverseMove = !_reverseMove;
-                //     break;
-                // }
-                var mob = _viewControllers[i];
-
-                mob.Move(currentOffset);
+                _viewControllers[i].Move(currentOffset);
             }
         }
 

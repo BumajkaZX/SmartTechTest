@@ -3,6 +3,9 @@ namespace SmartTechTest.UI
     using TMPro;
     using UnityEngine;
 
+    /// <summary>
+    /// Вьюшка счётчика очков
+    /// </summary>
     [RequireComponent(typeof(TextMeshProUGUI))]
     public class GameCounterView : MonoBehaviour, IGameCounter
     {

@@ -8,6 +8,9 @@ namespace SmartTechTest.Game
     using UniRx;
     using Zenject;
 
+    /// <summary>
+    /// Система показа игровых функций игроку : система очков, инпут система
+    /// </summary>
     public class GameController : IStateStage
     {
         [Inject]
@@ -37,12 +40,12 @@ namespace SmartTechTest.Game
             {
                 if (go.TryGetComponent(out MobViewController mobView))
                 {
-                    OnMobHitted();
+                    OnMobHit();
                     return;
                 }
                 if (go.TryGetComponent(out PlayerViewController playerController))
                 {
-                    OnPlayerHitted();
+                    OnPlayerHit();
                     return;
                 }
                 
@@ -66,12 +69,12 @@ namespace SmartTechTest.Game
             _playerInputView.Enable(false);
         }
 
-        private void OnMobHitted()
+        private void OnMobHit()
         {
             _gameCounter.Increase(5);
         }
 
-        private void OnPlayerHitted()
+        private void OnPlayerHit()
         {
             _gameCounter.Clear();
         }

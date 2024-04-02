@@ -3,6 +3,9 @@ namespace SmartTechTest.Game.Mobs
     using Main.Mob;
     using UnityEngine;
 
+    /// <summary>
+    /// Вьюшка моба - небольшой кэш позиции
+    /// </summary>
     public class MobViewController : MonoBehaviour
     {
         public AbstractMob MobConfig { get; private set; }
