@@ -3,10 +3,12 @@ namespace SmartTechTest.Game.Mobs
     using Field;
     using Fight;
     using Main.Mob;
+    using Main.Player;
     using Main.Pool;
     using Main.State;
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using UniRx;
     using UnityEngine;
     using Zenject;
@@ -19,7 +21,7 @@ namespace SmartTechTest.Game.Mobs
     {
         private const float MOVE_SPEED = 0.4f;
         
-        private const float SHOOT_TIME = 2;
+        private const float SHOOT_TIME = 1.2f;
 
         private const float RESPAWN_TIME = 2;
 
@@ -142,9 +144,42 @@ namespace SmartTechTest.Game.Mobs
             _isPaused = isPaused;
         }
 
+        //TODO: Упростить
         private void CalculateShootingMobs()
         {
+            _shootingMobs = new List<MobViewController>();
             
+            Dictionary<float, List<MobViewController>> table = new Dictionary<float, List<MobViewController>>();
+
+            foreach (var viewController in _viewControllers)
+            {
+                if (!table.ContainsKey(viewController.transform.position.x))
+                {
+                    table.Add(viewController.transform.position.x, new List<MobViewController>());
+                }
+                
+                if(table.TryGetValue(viewController.transform.position.x, out var viewControllers))
+                {
+                    viewControllers.Add(viewController);
+                }
+            }
+
+            foreach (var posView in table)
+            {
+                MobViewController lowestMob = posView.Value[0];
+                
+                posView.Value.ForEach(controller =>
+                {
+                    if (controller.transform.position.y < lowestMob.transform.position.y)
+                    {
+                        lowestMob = controller;
+                    }
+                });
+                
+                _shootingMobs.Add(lowestMob);
+            }
+            
+            table.Clear();
         }
         
         private void OnHit(GameObject hitObject)
@@ -157,6 +192,8 @@ namespace SmartTechTest.Game.Mobs
             _viewControllers.Remove(viewController);
             
             _mobFactory.ReleaseMob(viewController);
+            
+            CalculateShootingMobs();
 
             if (_viewControllers.Count == 0)
             {
@@ -185,7 +222,7 @@ namespace SmartTechTest.Game.Mobs
         private void Shoot()
         {
             _projectileRequest.RequestProjectile(_mobGun,
-                _viewControllers[Random.Range(0, _viewControllers.Count)].transform.position,
+                _shootingMobs[Random.Range(0, _shootingMobs.Count)].transform.position,
                 Vector3.down * _mobGun.ProjectileSpeed, PlayerLayer);
         }
     }

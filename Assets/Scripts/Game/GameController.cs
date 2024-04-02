@@ -73,7 +73,7 @@ namespace SmartTechTest.Game
 
         private void OnPlayerHitted()
         {
-            
+            _gameCounter.Clear();
         }
     }
 }

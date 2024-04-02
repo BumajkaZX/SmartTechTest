@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: MobGun
   m_EditorClassIdentifier: 
   _shootSpeed: 1
-  _projectileSpeed: 3
+  _projectileSpeed: 12
   _projectileView: {fileID: -535563480679928652, guid: b3aa8ed0163570f4c96c58e3f3d860b6, type: 3}
