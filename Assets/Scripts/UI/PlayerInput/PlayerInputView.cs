@@ -20,6 +20,10 @@ namespace SmartTechTest.UI
 
         public void Enable(bool isEnabled)
         {
+            if (!gameObject.activeSelf)
+            {
+                gameObject.SetActive(true);
+            }
             _canvasGroup.alpha = isEnabled ? _defaultAlpha : 0;
             _canvasGroup.blocksRaycasts = isEnabled;
         }
