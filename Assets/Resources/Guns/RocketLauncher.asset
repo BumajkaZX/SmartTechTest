@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d719e6a83b1924f48827942488d2ffa0, type: 3}
+  m_Name: RocketLauncher
+  m_EditorClassIdentifier: 
+  _shootSpeed: 2
+  _projectileSpeed: 5
+  _projectileView: {fileID: -535563480679928652, guid: a56bdd502cc215e4a8071a5f8ee65e67, type: 3}

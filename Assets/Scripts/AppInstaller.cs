@@ -31,12 +31,14 @@ namespace SmartTechTest.Register
             RegisterInput();
             RegisterGameField();
             RegisterAppStateSystem();
-            RegisterParticlesPool();
             RegisterMobFactory();
             RegisterSpawnPoints();
             RegisterSpawner();
-            RegisterProjectilesPool();
             RegisterGameCounter();
+            
+            RegisterProjectilesPool();
+            RegisterBonusPool();
+            RegisterParticlesPool();
         }
 
         /// <summary>
@@ -114,6 +116,14 @@ namespace SmartTechTest.Register
         private void RegisterGameCounter()
         {
             Container.Bind<IGameCounter>().FromInstance(_gameCounterView).AsSingle();
+        }
+
+        /// <summary>
+        /// Регистрация пула бонусов
+        /// </summary>
+        private void RegisterBonusPool()
+        {
+            Container.BindInterfacesAndSelfTo<BonusPool>().AsTransient();
         }
     }
 }

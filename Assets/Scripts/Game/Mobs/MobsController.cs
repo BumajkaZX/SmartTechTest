@@ -3,12 +3,10 @@ namespace SmartTechTest.Game.Mobs
     using Field;
     using Fight;
     using Main.Mob;
-    using Main.Player;
     using Main.Pool;
     using Main.State;
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using UniRx;
     using UnityEngine;
     using Zenject;

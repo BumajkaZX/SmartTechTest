@@ -1,6 +1,7 @@
 namespace SmartTechTest.Main.State
 {
     using Game;
+    using Game.Bonus;
     using Game.Fight;
     using Game.Mobs;
     using Player;
@@ -21,6 +22,7 @@ namespace SmartTechTest.Main.State
             AddStage(new MobsController(), container);
             AddStage(new HitDetectionSystem(), container);
             AddStage(new GameController(), container);
+            AddStage(new BonusSystem(), container);
             
             AddPauseStage(new ProjectileMovementSystem(), container);
         }

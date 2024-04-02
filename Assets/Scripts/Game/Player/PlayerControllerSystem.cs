@@ -78,7 +78,7 @@ namespace SmartTechTest.Main.Player
                 .AddTo(_disposable);
 
             Observable.EveryUpdate()
-                .Where(_ => _playerControl.Player.Fire.WasPressedThisFrame() && !_isPaused)
+                .Where(_ => _playerControl.Player.Fire.IsPressed() && !_isPaused)
                 .Subscribe(_ =>
                 {
                     Fire();

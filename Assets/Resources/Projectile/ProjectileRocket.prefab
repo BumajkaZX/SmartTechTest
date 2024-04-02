@@ -29,7 +29,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.5532, y: 0.5532, z: 0.5532}
+  m_LocalScale: {x: 1.3290681, y: 1.3290681, z: 1.3290681}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 1716947530716821216}
@@ -75,7 +75,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 2
-  m_Sprite: {fileID: 21300022, guid: 4f3d817ad821bc345b488255f0de8318, type: 3}
+  m_Sprite: {fileID: 21300276, guid: 4f3d817ad821bc345b488255f0de8318, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -118,18 +118,18 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: 0, y: -0.030774549}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1, y: 1}
+    oldSize: {x: 0.5, y: 0.5}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.5189791, y: 1}
+  m_Size: {x: 0.5189791, y: 0.4494603}
   m_EdgeRadius: 0
 --- !u!50 &7191896246238031642
 Rigidbody2D:
@@ -169,7 +169,7 @@ GameObject:
   - component: {fileID: 1716947530716821216}
   - component: {fileID: -535563480679928652}
   m_Layer: 6
-  m_Name: ProjectileBase
+  m_Name: ProjectileRocket
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
