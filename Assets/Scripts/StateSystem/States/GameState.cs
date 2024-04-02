@@ -1,5 +1,6 @@
 namespace SmartTechTest.Main.State
 {
+    using Game;
     using Game.Fight;
     using Game.Mobs;
     using Player;
@@ -13,12 +14,13 @@ namespace SmartTechTest.Main.State
         {
             _container = container;
             
-            container.BindInterfacesAndSelfTo<ProjectileRequestSystem>().AsSingle();
-            container.BindInterfacesAndSelfTo<HitObserver>().AsSingle();
+            _container.BindInterfacesAndSelfTo<ProjectileRequestSystem>().AsCached();
+            _container.BindInterfacesTo<HitObserver>().AsCached();
             
-            AddStage(new PlayerInstanceController(), container);
+            AddStage(new PlayerControllerSystem(), container);
             AddStage(new MobsController(), container);
             AddStage(new HitDetectionSystem(), container);
+            AddStage(new GameController(), container);
             
             AddPauseStage(new ProjectileMovementSystem(), container);
         }
@@ -37,9 +39,11 @@ namespace SmartTechTest.Main.State
             {
                 stage.Value.Stop(shouldClearResources);
             }
-
+            
+            _container.Resolve<ProjectileRequestSystem>().Dispose();
             _container.Unbind<ProjectileRequestSystem>();
-            _container.Unbind<HitObserver>();
+            _container.UnbindInterfacesTo<ProjectileRequestSystem>();
+            _container.UnbindInterfacesTo<HitObserver>();
         }
     }
 }

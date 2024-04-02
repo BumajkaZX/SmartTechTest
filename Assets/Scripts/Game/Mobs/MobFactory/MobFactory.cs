@@ -87,7 +87,7 @@ namespace SmartTechTest.Game.Mobs
 
         public void ReleaseMob(List<MobViewController> mobs)
         {
-            for (int i = 0; i < _mobs.Count; i++)
+            for (int i = 0; i < mobs.Count; i++)
             {
                 _mobPool.Release(mobs[i]);
             }
@@ -111,6 +111,7 @@ namespace SmartTechTest.Game.Mobs
         public void Dispose()
         {
             _mobPool.Clear();
+            _mobPool.Dispose();
         }
     }
 }

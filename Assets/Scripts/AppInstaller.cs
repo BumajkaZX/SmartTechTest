@@ -6,6 +6,7 @@ namespace SmartTechTest.Register
     using Main.Pool;
     using Main.Spawn;
     using Main.State;
+    using UI;
     using UnityEngine;
     using Zenject;
 
@@ -18,6 +19,12 @@ namespace SmartTechTest.Register
 
         [SerializeField]
         private SpawnPoints _spawnPoints;
+
+        [SerializeField]
+        private GameCounterView _gameCounterView;
+
+        [SerializeField]
+        private PlayerInputView _playerInputView;
         
         public override void InstallBindings()
         {
@@ -29,6 +36,7 @@ namespace SmartTechTest.Register
             RegisterSpawnPoints();
             RegisterSpawner();
             RegisterProjectilesPool();
+            RegisterGameCounter();
         }
 
         /// <summary>
@@ -40,6 +48,8 @@ namespace SmartTechTest.Register
             control.Enable();
 
             Container.BindInstance(control).AsSingle();
+
+            Container.BindInstance(_playerInputView).AsSingle();
         }
 
         /// <summary>
@@ -96,6 +106,14 @@ namespace SmartTechTest.Register
         private void RegisterProjectilesPool()
         {
             Container.BindInterfacesAndSelfTo<ProjectilesPool>().AsTransient();
+        }
+
+        /// <summary>
+        /// Регистрация счётчика очков
+        /// </summary>
+        private void RegisterGameCounter()
+        {
+            Container.Bind<IGameCounter>().FromInstance(_gameCounterView).AsSingle();
         }
     }
 }

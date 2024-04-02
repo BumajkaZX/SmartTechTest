@@ -30,16 +30,16 @@ namespace SmartTechTest.Game.Fight
             CompositeDisposable disposable = new CompositeDisposable();
             _disposable.Add(disposable);
             
-            spawnedProjectile.gameObject.ObserveEveryValueChanged(go => go.activeSelf).Where(active => !active)
+            spawnedProjectile.gameObject.ObserveEveryValueChanged(go => go.activeSelf).Where(active => !active).DoOnCancel(() =>
+                {
+                    releaseAction.Execute();
+                })
                 .Subscribe(_ =>
                 {
-
                     OnViewReleased.Execute(spawnedProjectile);
-                    releaseAction.Execute();
                     disposable.Clear();
                     _disposable.Remove(disposable);
                 }).AddTo(disposable);
-            
             _spawnedViews.Add(spawnedProjectile);
 
             spawnedProjectile.transform.position = pos;

@@ -1,6 +1,7 @@
 namespace SmartTechTest.Main.State
 {
     using UniRx;
+    using UnityEngine;
     using Zenject;
 
     public class AppStateSystem : IStateSystem
@@ -16,16 +17,12 @@ namespace SmartTechTest.Main.State
         {
             if (_currentState != null)
             {
-                if (_currentState.GetType() == newState.GetType())
-                {
-                    return;
-                }
-                
                 _currentState.Exit(shouldClearResources);
             }
             
             _currentState = newState;
             _currentState.Init(_container);
+            OnStateChange.Execute(_currentState);
             _currentState.Enter();
         }
 

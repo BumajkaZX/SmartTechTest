@@ -21,9 +21,13 @@ namespace SmartTechTest.Game.Mobs
         
         private const float SHOOT_TIME = 2;
 
+        private const float RESPAWN_TIME = 2;
+
         private const int MIN_MOB_IN_LINE = 3;
 
         private const int MAX_MOB_IN_LINE = 5;
+
+        private const int MOB_LINES = 3;
 
         private const string MOB_GUN_PATH = "Guns/MobGun";
         
@@ -104,7 +108,7 @@ namespace SmartTechTest.Game.Mobs
 
         public void Start()
         {
-            SpawnWave(3);
+            SpawnWave(MOB_LINES);
             
             //Move
             Observable.EveryUpdate()
@@ -115,7 +119,7 @@ namespace SmartTechTest.Game.Mobs
             //Shoot
             Observable.Timer(TimeSpan.FromSeconds(SHOOT_TIME))
                 .Repeat()
-                .Where(_ => !_isPaused)
+                .Where(_ => !_isPaused && _viewControllers.Count != 0)
                 .Subscribe(_ => Shoot())
                 .AddTo(_disposable);
             
@@ -127,7 +131,6 @@ namespace SmartTechTest.Game.Mobs
             if (shouldClearResources)
             {
                 _mobFactory.ReleaseMob(_viewControllers);
-                
                 return;
             }
             
@@ -154,6 +157,11 @@ namespace SmartTechTest.Game.Mobs
             _viewControllers.Remove(viewController);
             
             _mobFactory.ReleaseMob(viewController);
+
+            if (_viewControllers.Count == 0)
+            {
+               Observable.Timer(TimeSpan.FromSeconds(RESPAWN_TIME)).Subscribe(_ => SpawnWave(MOB_LINES));
+            }
             
             var releaseCommand =  _deathParticles.RequestObject(viewController.MobConfig.DestroyParticles, out var pooledParticles);
             

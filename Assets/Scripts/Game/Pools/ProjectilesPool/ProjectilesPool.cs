@@ -52,7 +52,8 @@ namespace SmartTechTest.Main.Pool
                 new ObjectPool<ProjectileView>(
                     () => Object.Instantiate(baseObject),
                     view => view.gameObject.SetActive(true),
-                    actionOnDestroy: view => Object.Destroy(view.gameObject),
+                    view => view.gameObject.SetActive(false),
+                     view => Object.Destroy(view.gameObject),
                     defaultCapacity: estimatedCapacity);
 
             _poolDictionary.Add(baseObject, newPool);

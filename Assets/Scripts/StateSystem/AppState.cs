@@ -22,6 +22,11 @@
             {
                 pauseStage.Pause(isPaused);
             }
+
+            foreach (var stageByKey in _stateStages)
+            {
+                stageByKey.Value.Pause(isPaused);
+            }
         }
 
         protected void AddPauseStage(IPauseStage stage, DiContainer container)
