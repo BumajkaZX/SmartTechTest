@@ -13,6 +13,10 @@ namespace SmartTechTest.Main.Player
 
         public float MoveSpeed => _moveSpeed;
 
+        public float HeightMoveTime => _heightMoveTime;
+
+        public int MaxHeightSteps => _maxHeightSteps;
+        
         public BaseGun BaseGun => _currentGun;
 
         [SerializeField]
@@ -25,6 +29,12 @@ namespace SmartTechTest.Main.Player
 
         [SerializeField]
         private BaseGun _currentGun;
-        
+
+        [SerializeField]
+        private int _maxHeightSteps;
+
+        [SerializeField]
+        private float _heightMoveTime;
+
     }
 }

@@ -5,15 +5,21 @@ namespace SmartTechTest.Main.Player
     using Game.Spawn;
     using Spawn;
     using State;
+    using System;
     using UniRx;
     using UnityEngine;
     using Zenject;
+    using Object = UnityEngine.Object;
 
     /// <summary>
     /// Контроллер игрока
     /// </summary>
     public class PlayerControllerSystem : IStateStage
     {
+        private const float HEIGHT_STEP = 0.7f;
+
+        private const float MOVE_Y_DEADZONE = 0.5f;
+        
         private const string PLAYER_PATH = "Player/PlayerBase";
         
         private readonly LayerMask TargetLayer = LayerMask.NameToLayer("Enemy");
@@ -35,6 +41,12 @@ namespace SmartTechTest.Main.Player
 
         private bool _isPaused;
 
+        private int _heightStep;
+
+        private float _moveYTime;
+
+        private float _fireTime;
+
         private PlayerViewController _playerViewController;
         
         private CompositeDisposable _disposable = new CompositeDisposable();
@@ -43,6 +55,9 @@ namespace SmartTechTest.Main.Player
         {
             _playerViewController =
                 _prefabSpawner.Instantiate(_playerViewController);
+
+            _moveYTime = _playerViewController.HeightMoveTime;
+            _fireTime = _playerViewController.BaseGun.ShootSpeed;
         }
 
         private void ResetPlayer()
@@ -69,6 +84,8 @@ namespace SmartTechTest.Main.Player
                     Fire();
                 })
                 .AddTo(_disposable);
+
+            Observable.EveryUpdate().Subscribe(_ => UpdateFireRate()).AddTo(_disposable);
         }
         
         private void Move(Vector2 dir)
@@ -78,6 +95,7 @@ namespace SmartTechTest.Main.Player
 
             if (dir == Vector2.zero)
             {
+                _moveYTime += Time.deltaTime;
                 return;
             }
 
@@ -89,15 +107,54 @@ namespace SmartTechTest.Main.Player
                 Mathf.Clamp(newPos.x, 
                     _baseField.FieldBounds.min.x + playerView.SpriteBounds.extents.x, 
                     _baseField.FieldBounds.max.x - playerView.SpriteBounds.extents.x),
-                newPos.y, 
+                CalculateY(newPos.y, dir.y), 
                 newPos.z);
 
             transform.position = newPos;
         }
+
+        private float CalculateY(float defaultY, float inputY)
+        {
+            if (_moveYTime < _playerViewController.HeightMoveTime)
+            {
+                _moveYTime += Time.deltaTime;
+                return defaultY;
+            }
+            
+            if (inputY > MOVE_Y_DEADZONE && _heightStep < _playerViewController.MaxHeightSteps)
+            {
+                defaultY += HEIGHT_STEP;
+                _heightStep++;
+            }
+            
+            if(inputY < -MOVE_Y_DEADZONE && _heightStep > 0)
+            {
+                defaultY -= HEIGHT_STEP;
+                _heightStep--;
+            }
+
+            _moveYTime = 0;
+
+            return defaultY;
+        }
         
         private void Fire()
         {
+            if (_fireTime < _playerViewController.BaseGun.ShootSpeed)
+            {
+                return;
+            }
+            
             _projectileRequest.RequestProjectile(_playerViewController.BaseGun, _playerViewController.transform.position, Vector3.up * _playerViewController.BaseGun.ProjectileSpeed, TargetLayer);
+            _fireTime = 0;
+        }
+
+        private void UpdateFireRate()
+        {
+            if (_fireTime < _playerViewController.BaseGun.ShootSpeed)
+            {
+                _fireTime += Time.deltaTime;
+            }
         }
 
         public void Start()

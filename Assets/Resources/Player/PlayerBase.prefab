@@ -150,9 +150,8 @@ MonoBehaviour:
   _playerView: {fileID: 7555466343866077892}
   _moveSpeed: 5
   _currentGun: {fileID: 11400000, guid: e15724f786646ec41b6c7dc12394bf50, type: 2}
-  _targetLayer:
-    serializedVersion: 2
-    m_Bits: 128
+  _maxHeightSteps: 2
+  _heightMoveTime: 1
 --- !u!61 &3841217193266314491
 BoxCollider2D:
   m_ObjectHideFlags: 0
